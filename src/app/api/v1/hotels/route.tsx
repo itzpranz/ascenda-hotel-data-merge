@@ -4,7 +4,6 @@ import { NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
     try {
         const { destinationId, hotelIds, page, pageSize } = validateHotelQuery(request);
-        console.log(destinationId, hotelIds, page, pageSize);
         const hotels = await getHotels(destinationId, hotelIds, page, pageSize);
         return new Response(JSON.stringify(hotels), {
             headers: {

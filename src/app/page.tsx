@@ -8,7 +8,7 @@ export default function Home() {
   const [destinationId, setDestinationId] = useState('');
   const [hotelIds, setHotelIds] = useState('');
   const [message, setMessage] = useState('');
-  const [hotelData, setHotelData] = useState<Hotel[]>([]);
+  const [hotelData, setHotelData] = useState<Hotel[]>();
   const [hotelDetail, setHotelDetail] = useState<Hotel>();
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -35,7 +35,6 @@ export default function Home() {
 
     try {
       const response = await fetch(`/api/v1/hotels?${key}=${value}`);
-      console.log(response);
       
       if (!response.ok) {
         const errorMessage = JSON.parse(await response.text());
@@ -106,12 +105,17 @@ export default function Home() {
           <div className={`col-span-2 text-center ${isError ? 'text-red-500' : ''}`}>{message}</div>
         </div>
         <div className="mt-10">
-          {hotelData.map((hotel: Hotel) => (
+          {hotelData && hotelData.map((hotel: Hotel) => (
             <div onClick={() => setHotelDetail(hotel)} key={hotel.id} className={`rounded-sm cursor-pointer border border-stroke bg-white drop-shadow dark:border-stone-950 dark:bg-stone-900 hover:bg-gray-200 dark:hover:bg-stone-800 p-8 mb-4 ${hotel.id == hotelDetail?.id ? 'bg-gray-400 dark:bg-stone-700' : ''}`}>
               <h3 className="text-xl font-bold">{hotel.name}</h3>
               <p>{hotel.location.address}, {hotel.location.city}, {hotel.location.country}</p>
             </div>
           ))}
+          {!loading && hotelData && hotelData.length === 0 && (
+            <div className="rounded-sm border border-stroke bg-white drop-shadow dark:border-stone-950 dark:bg-stone-900 p-8 mb-4">
+              <h3 className="text-xl">No hotels found</h3>
+            </div>
+          )}
           {loading && (
             <div className="flex justify-center items-center">
               <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
